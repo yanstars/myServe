@@ -1,4 +1,4 @@
-const { add, deleteD } = require('../controller/discuss');
+const { add, deleteD, getList } = require('../controller/discuss');
 
 class Discusssion {
     constructor(id = 0, targetId = 0, prodid = 0) {
@@ -11,6 +11,9 @@ class Discusssion {
         return await add(this.id, this.targetId, this.prodid, text);
     }
 
+    async getDiscuss(id) {
+        return await getList(id);
+    }
     async deleteFromDb(id) {
         return await deleteD(id);
     }
