@@ -1,15 +1,9 @@
-// const { ErrorModel } = require('../model/resModel')
+const { ErrorModel } = require('../model/');
 
 module.exports = (req, res, next) => {
-    if (req.session.username) {
+    if (req.cookies.user) {
         next();
         return;
     }
-    res.json(
-        // new ErrorModel('未登录')
-        {
-            code: '-1',
-            meg: '未登录',
-        }
-    );
+    res.json(new ErrorModel('未登录'));
 };

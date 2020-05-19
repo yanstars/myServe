@@ -6,10 +6,11 @@ dodelete = (target) => {
         let targertpath = path.join(__dirname, '../', 'uploads', target);
         let commond = `  rm -rf  ${targertpath}  `;
         console.log('object', commond);
-        exec(commond, function (err, out) {
-            console.log(out);
-            res();
-            err && rel(err);
+        exec(commond, (err, out) => {
+            if (err) {
+                throw err;
+            }
+            res(out);
         });
     });
 };

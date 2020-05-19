@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=dev nodemon ./bin/www",
     "prd": "cross-env NODE_ENV=production nodemon ./bin/www",
-    "sql": "cross-env NODE_ENV=dev node ./sqltest.js"
+    "sql": "cross-env NODE_ENV=dev node ./test/sqltest.js",
+    "discuss": "cross-env NODE_ENV=dev node ./test/addDisscuss.js"
   },
   "dependencies": {
     "ali-oss": "^6.7.0",
