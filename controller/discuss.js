@@ -17,27 +17,53 @@ const deleteD = async (id) => {
 
 const getList = async (id) => {
     const sql = `
-    select discuss.*  ,users.username 
-    from discuss,users 
-    where users.id = any(
-        select 
-        discuss.userid
-        from discuss where 
-        prodid =${id} 
+    select distinct  users.username  ,discuss.*
+    from discuss,users
+    where users.id  in  (
+        select
+        userid
+        from discuss where
+        prodid =${id}
     )  `;
-    let result1 = await exec(sql);
 
-    const sql2 = `
-    select  users.username as targetname
-    from users 
-    where users.id = any(
-        select 
-        discuss.targetid
-        from discuss where 
-        prodid =${id} 
-    )  `;
-    let result2 = await exec(sql2);
-    result1[0].targetname = result2[0].targetname;
+    // const sql = `
+    //     select
+    //     userid
+    //     from discuss where
+    //     prodid =${id}
+    //   `;
+    let result1 = await exec(sql);
+    let list = []
+
+    result1.forEach((item, index,arr) => {
+        if((index+1)%2==0){
+
+            let obj = arr[index];
+            console.log('arr[index+1]', arr[index+1])
+            obj.targetusername = arr[index+1].username
+            console.log('obj', obj)
+
+            list.push(obj)
+
+        }
+    });
+
+    console.log('arr', list)
+
+    // const sql2 = `
+    // select  users.username as targetname
+    // from users
+    // where users.id = any(
+    //     select
+    //     discuss.targetid
+    //     from discuss where
+    //     prodid =${id}
+    // )  `;
+    // let result2 = await exec(sql2);
+    // result1[0].targetname = result2[0].targetname;
+
+    // console.log('result1', result1);
+    // console.log('result2', result2)
     return Promise.resolve(result1);
 };
 

@@ -9,6 +9,7 @@ router.get('/:id', async (req, res) => {
     var id = req.params.id;
 
     let result = await discussion.getDiscuss(id);
+    // console.log('result', result)
     res.json(result);
 });
 
