@@ -2,7 +2,6 @@ const { exec, escape } = require('../db/mysql');
 
 // 获取 粉丝列表
 const getFanslist = async (id) => {
-    console.log('id', id);
     const sql = `select  distinct
     user.username,user.id,user.headImgPath
     from user,fans
@@ -15,7 +14,6 @@ const getFanslist = async (id) => {
 // 获取 关注列表
 
 const getMyFoucslist = async (id) => {
-    console.log('id', id);
     const sql = `select  distinct
     user.username,user.id,user.headImgPath
     from user,fans

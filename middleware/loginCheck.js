@@ -6,10 +6,10 @@ module.exports = (req, res, next) => {
         if (req.cookies.user) {
             Cache.get(req.cookies.user, (err, data) => {
                 req.userid = data;
+                // res.json(new ErrorModel('未登录'));
                 resolve(next());
             });
         } else {
-            // return res.redirect('/sign/in');
             res.json(new ErrorModel('未登录'));
         }
     });

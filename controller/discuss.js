@@ -1,8 +1,11 @@
 const { exec, escape } = require('../db/mysql');
 
-const add = async (id, targetid, prodid, text) => {
+const add = async (uid, uname, pid, pname, prodid, text, date) => {
     text = escape(text);
-    const sql = `insert into discuss (userid,targetid,prodid,text) values (${id},${targetid},${prodid},${text})`;
+    pname = escape(pname);
+    uname = escape(uname);
+    date = escape(date);
+    const sql = `insert into discuss (userid,username,pid,pname,prodid,text,date) values (${uid},${uname},${pid},${pname},${prodid},${text},${date})`;
     return exec(sql);
 };
 
@@ -17,58 +20,42 @@ const deleteD = async (id) => {
 
 const getList = async (id) => {
     const sql = `
-    select distinct  users.username  ,discuss.*
-    from discuss,users
-    where users.id  in  (
-        select
-        userid
-        from discuss where
-        prodid =${id}
-    )  `;
+    select distinct *
+    from discuss
+    where prodid = ${id}  `;
+    return exec(sql);
+};
 
-    // const sql = `
-    //     select
-    //     userid
-    //     from discuss where
-    //     prodid =${id}
-    //   `;
-    let result1 = await exec(sql);
-    let list = []
+const Dcollect = async (userid, id) => {
+    const isCollected = `select * from collection where id = ${userid} and  prodid = ${id} and type = 0 `;
+    let check = await exec(isCollected);
+    if (!check.length) {
+        const addCollection = `insert into collection(id,prodid,type) values(${userid},${id},0);`;
+        return exec(addCollection);
+    } else {
+        return Promise.resolve({
+            err: -1,
+        });
+    }
+};
 
-    result1.forEach((item, index,arr) => {
-        if((index+1)%2==0){
-
-            let obj = arr[index];
-            console.log('arr[index+1]', arr[index+1])
-            obj.targetusername = arr[index+1].username
-            console.log('obj', obj)
-
-            list.push(obj)
-
-        }
-    });
-
-    console.log('arr', list)
-
-    // const sql2 = `
-    // select  users.username as targetname
-    // from users
-    // where users.id = any(
-    //     select
-    //     discuss.targetid
-    //     from discuss where
-    //     prodid =${id}
-    // )  `;
-    // let result2 = await exec(sql2);
-    // result1[0].targetname = result2[0].targetname;
-
-    // console.log('result1', result1);
-    // console.log('result2', result2)
-    return Promise.resolve(result1);
+const Dstar = async (userid, id) => {
+    let star = `select * from stars where userID = ${userid} and targetID = ${id} and isMv = 0 `;
+    star = await exec(star);
+    if (!star.length) {
+        star = `insert into stars(userID,targetID,isMv) values(${userid},${id},0);`;
+        return exec(star);
+    } else {
+        return Promise.resolve({
+            err: -1,
+        });
+    }
 };
 
 module.exports = {
     add,
     deleteD,
     getList,
+    Dcollect,
+    Dstar
 };

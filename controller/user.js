@@ -101,7 +101,6 @@ const updateUserInfo = async (userid, birth, info, sex, username) => {
         info = ${info},
         sex = ${sex}
         WHERE id=${userid};`;
-    console.log('sql', sql);
 
     let { warningCount } = await exec(sql);
     return warningCount;
@@ -112,18 +111,15 @@ const updateUserInfo = async (userid, birth, info, sex, username) => {
 // const getUserIdByName = async (name) => {
 //     name = escape(name);
 //     const getid = `select id from users where username = ${name}`;
-//     console.log('getid', getid);
 //     return exec(getid);
 // };
 
 const addFans = async (id, targetid) => {
     const sql = `insert into fans (fansid,userid) values (${id},${targetid})`;
-    console.log('sql', sql);
     return exec(sql);
 };
 
 const getlist = async (page, user = '') => {
-    // let name = console.log('object', page);
     let sql;
     if (user.length) {
         sql = `select  DISTINCT
@@ -137,7 +133,6 @@ const getlist = async (page, user = '') => {
     } else {
         sql = `select   * ,username  from   user_pro ,users  where user_pro.id =users.id   order   by   date   desc   limit   0,${page} ; `;
     }
-    console.log('sql', sql);
     return exec(sql).then((e) => {
         return e;
     });

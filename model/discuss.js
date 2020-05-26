@@ -7,8 +7,8 @@ class Discusssion {
         this.prodid = prodid;
     }
 
-    async addToDb(text = '') {
-        return await add(this.id, this.targetId, this.prodid, text);
+    async addToDb(uid, uname, pid, pname, prodid, text = '', date) {
+        return await add(uid, uname, pid, pname, prodid, text, date);
     }
 
     async getDiscuss(id) {

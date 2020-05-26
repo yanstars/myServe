@@ -17,4 +17,3 @@ dodelete = (target) => {
 
 module.exports = dodelete;
 
-// console.log('__dirname', __dirname)

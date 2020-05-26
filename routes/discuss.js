@@ -2,43 +2,47 @@ var express = require('express');
 var router = express.Router();
 const Discusssion = require('../model/discuss');
 let discussion = new Discusssion();
-
-const { getUserIdByName } = require('../controller/user');
+const loginCheck = require('../middleware/loginCheck');
+let moment = require('moment');
 
 router.get('/:id', async (req, res) => {
-    var id = req.params.id;
-
+    let id = req.params.id;
     let result = await discussion.getDiscuss(id);
-    // console.log('result', result)
-    res.json(result);
-});
-
-router.delete('/api/discuss/:id', async (req, res) => {
-    var id = req.params.id;
-    console.log('id', id);
     res.json({
         code: 6666,
+        list: result,
+        msg:'查询成功'
     });
 });
 
-router.post('/addDisscuss', async (req, res) => {
-    let { text, targertuserid, productId } = req.body;
-    let { user } = req.cookies;
-    let userid = await getUserIdByName(user);
-    userid = userid[0].id;
-    let model = new Discusssion(userid, targertuserid, productId);
-    console.log('userid, targertuserid, productId, text', userid, targertuserid, productId, text);
-    let result = await model.addToDb(text);
-    console.log('result', result);
-    // if (!result.warningCount) {
-    //     res.json({
-    //         code: 6666,
-    //     });
-    // } else {
-    //     res.json({
-    //         code: 4444,
-    //     });
-    // }
+// router.delete('/api/discuss/:id', async (req, res) => {
+//     var id = req.params.id;
+//     console.log('id', id);
+//     res.json({
+//         code: 6666,
+//     });
+// });
+
+
+
+router.post('/addDisscuss', loginCheck, async (req, res) => {
+    let { text, pid, pname, username, prodid } = req.body;
+    let userid = req.userid;
+    // 获取当前时间
+    let date = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+    // 添加记录到数据库
+    let result = await discussion.addToDb(userid, username, pid, pname, prodid, text, date);
+    if (!result.warningCount) {
+        res.json({
+            code: 6666,
+            msg: '评论成功',
+        });
+    } else {
+        res.json({
+            code: 4444,
+            msg: '评论失败',
+        });
+    }
 });
 
 module.exports = router;
